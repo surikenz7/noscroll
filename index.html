@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>NoScroll</title>
+  <style>
+    :root { --bg: #fafafa; --card: #fff; --text: #111; --muted: #666; --line: #e3e3e3; --accent: #0095f6; }
+    @media (prefers-color-scheme: dark) {
+      :root { --bg: #000; --card: #121212; --text: #f2f2f2; --muted: #a0a0a0; --line: #262626; }
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; background: var(--bg); color: var(--text);
+      font: 16px/1.5 -apple-system, system-ui, sans-serif;
+      padding: calc(env(safe-area-inset-top) + 24px) 16px 48px;
+    }
+    main { max-width: 520px; margin: 0 auto; }
+    h1 { font-size: 30px; margin: 0 0 4px; letter-spacing: -.5px; }
+    h2 { font-size: 18px; margin: 28px 0 10px; }
+    .lead { color: var(--muted); margin: 0 0 20px; }
+    .install {
+      display: block; text-align: center; padding: 14px; border-radius: 12px;
+      background: var(--accent); color: #fff; font-weight: 600; font-size: 17px; text-decoration: none;
+    }
+    .card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 4px 16px; }
+    ol, ul { margin: 0; padding: 12px 0 12px 22px; }
+    li { margin: 6px 0; }
+    li small { color: var(--muted); display: block; }
+    code { font-size: 14px; background: var(--line); padding: 1px 5px; border-radius: 5px; word-break: break-all; }
+    .check li { list-style: none; margin-left: -22px; }
+    .check li::before { content: "☐  "; }
+    p.small { color: var(--muted); font-size: 14px; }
+  </style>
+</head>
+<body>
+<main>
+  <h1>NoScroll</h1>
+  <p class="lead">Instagram without the feed. No home feed, Explore or Reels tab. Messages, stories, notes, reels friends send you and settings still work.</p>
+
+  <a class="install" href="noscroll.user.js">Install script</a>
+
+  <h2>Set up on iPhone</h2>
+  <div class="card">
+    <ol>
+      <li>Install <b>Userscripts</b> (free) from the App Store, open it once and pick a folder when it asks.</li>
+      <li>Settings → Apps → Safari → Extensions → <b>Userscripts</b>: turn it on and set <b>instagram.com</b> to “Allow”.
+        <small>Also allow this page (github.io), so it can install the script.</small></li>
+      <li>In Safari, tap <b>Install script</b> above. Then tap the puzzle icon (or “aA”) in the address bar → <b>Userscripts</b> → <b>Install</b>.</li>
+      <li>Open <code>instagram.com/direct/inbox/</code> in Safari and log in. You should see a blue “NoScroll on” badge for a moment.</li>
+      <li>Share → <b>Add to Home Screen</b>, and turn <b>“Open as Web App” off</b>.
+        <small>With it on, the icon opens without Safari and the script doesn't run.</small></li>
+    </ol>
+  </div>
+
+  <h2>What it does</h2>
+  <div class="card">
+    <ul>
+      <li><b>Home:</b> posts are hidden, only the stories bar at the top is left.</li>
+      <li><b>Explore:</b> the button opens plain search (to find people), not the grid.</li>
+      <li><b>Reels tab:</b> gone.</li>
+      <li><b>Reels from friends:</b> they play, but swiping to the next one takes you back.</li>
+    </ul>
+  </div>
+
+  <h2>Test checklist</h2>
+  <div class="card">
+    <ul class="check">
+      <li>Instants: can you open, send and receive them?</li>
+      <li>Notes in messages: can you see and add them?</li>
+      <li>Posting a story</li>
+      <li>Message notifications</li>
+      <li>Home Screen icon opens with the “NoScroll on” badge</li>
+      <li>Home shows stories only, swiping to the next reel doesn't work</li>
+      <li>Does it feel smooth enough compared with the app?</li>
+    </ul>
+  </div>
+
+  <p class="small">Updates: open the Userscripts menu in Safari and check for updates. Nothing here sees your password, the script only changes how instagram.com looks in your own Safari.</p>
+</main>
+</body>
+</html>
