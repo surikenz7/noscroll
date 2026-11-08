@@ -19,9 +19,14 @@
     h1 { font-size: 30px; margin: 0 0 4px; letter-spacing: -.5px; }
     h2 { font-size: 18px; margin: 28px 0 10px; }
     .lead { color: var(--muted); margin: 0 0 20px; }
-    .install {
-      display: block; text-align: center; padding: 14px; border-radius: 12px;
-      background: var(--accent); color: #fff; font-weight: 600; font-size: 17px; text-decoration: none;
+    button.copy {
+      display: block; width: 100%; padding: 14px; border: 0; border-radius: 12px;
+      background: var(--accent); color: #fff; font: 600 17px -apple-system, system-ui, sans-serif;
+    }
+    textarea {
+      width: 100%; height: 72px; margin-top: 10px; padding: 8px; border-radius: 10px;
+      border: 1px solid var(--line); background: var(--card); color: var(--muted);
+      font: 12px ui-monospace, monospace; resize: none;
     }
     .card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 4px 16px; }
     ol, ul { margin: 0; padding: 12px 0 12px 22px; }
@@ -36,28 +41,37 @@
 <body>
 <main>
   <h1>NoScroll</h1>
-  <p class="lead">Instagram without the feed. No home feed, Explore or Reels tab. Messages, stories, notes, reels friends send you and settings still work.</p>
+  <p class="lead">Instagram without the feed, using only Safari. Nothing to install: it's a bookmark you tap after Instagram opens.</p>
 
-  <a class="install" href="noscroll.user.js">Install script</a>
+  <button class="copy" id="copy" type="button" disabled>Loading…</button>
+  <textarea id="code" readonly aria-label="Bookmark code"></textarea>
 
-  <h2>Set up on iPhone</h2>
+  <h2>Set up once</h2>
   <div class="card">
     <ol>
-      <li>Install <b>Userscripts</b> (free) from the App Store, open it once and pick a folder when it asks.</li>
-      <li>Settings → Apps → Safari → Extensions → <b>Userscripts</b>: turn it on and set <b>instagram.com</b> to “Allow”.
-        <small>Also allow this page (github.io), so it can install the script.</small></li>
-      <li>In Safari, tap <b>Install script</b> above. Then tap the puzzle icon (or “aA”) in the address bar → <b>Userscripts</b> → <b>Install</b>.</li>
-      <li>Open <code>instagram.com/direct/inbox/</code> in Safari and log in. You should see a blue “NoScroll on” badge for a moment.</li>
-      <li>Share → <b>Add to Home Screen</b>, and turn <b>“Open as Web App” off</b>.
-        <small>With it on, the icon opens without Safari and the script doesn't run.</small></li>
+      <li>Tap <b>Copy bookmark code</b> above.</li>
+      <li>Bookmark this page: Share → <b>Add Bookmark</b>, save it in <b>Favorites</b>, name it <b>NoScroll</b>.</li>
+      <li>Open Bookmarks → <b>Edit</b> → tap <b>NoScroll</b>. Delete the address, paste the copied code, tap <b>Done</b>.
+        <small>The address must start with <code>javascript:</code></small></li>
+      <li>Optional Home Screen icon: open <code>instagram.com</code> in Safari → Share → <b>Add to Home Screen</b>, with <b>“Open as Web App” off</b>.
+        <small>It has to open in Safari, because you need the address bar to tap the bookmark.</small></li>
     </ol>
+  </div>
+
+  <h2>Every time</h2>
+  <div class="card">
+    <ol>
+      <li>Open <code>instagram.com</code> in Safari (or the Home Screen icon).</li>
+      <li>Tap the address bar → tap <b>NoScroll</b> in Favorites. A blue “NoScroll on” badge appears.</li>
+    </ol>
+    <p class="small">It stays on while you use Instagram. If the page reloads (pull to refresh, or Safari reloads the tab later), tap it again.</p>
   </div>
 
   <h2>What it does</h2>
   <div class="card">
     <ul>
       <li><b>Home:</b> posts are hidden, only the stories bar at the top is left.</li>
-      <li><b>Explore:</b> the button opens plain search (to find people), not the grid.</li>
+      <li><b>Explore:</b> only the search bar is left, to find people.</li>
       <li><b>Reels tab:</b> gone.</li>
       <li><b>Reels from friends:</b> they play, but swiping to the next one takes you back.</li>
     </ul>
@@ -66,17 +80,37 @@
   <h2>Test checklist</h2>
   <div class="card">
     <ul class="check">
+      <li>Tapping NoScroll shows the blue badge (if not, tell me)</li>
       <li>Instants: can you open, send and receive them?</li>
       <li>Notes in messages: can you see and add them?</li>
       <li>Posting a story</li>
       <li>Message notifications</li>
-      <li>Home Screen icon opens with the “NoScroll on” badge</li>
       <li>Home shows stories only, swiping to the next reel doesn't work</li>
       <li>Does it feel smooth enough compared with the app?</li>
     </ul>
   </div>
 
-  <p class="small">Updates: open the Userscripts menu in Safari and check for updates. Nothing here sees your password, the script only changes how instagram.com looks in your own Safari.</p>
+  <p class="small">The code only changes how instagram.com looks in your own Safari. It never sees your password. After an update, copy the code again and paste it into the bookmark.</p>
 </main>
+<script>
+  const btn = document.getElementById('copy');
+  const box = document.getElementById('code');
+  fetch('noscroll.js', { cache: 'no-store' })
+    .then((r) => r.text())
+    .then((src) => {
+      // Drop whole-line comments; everything else is kept as-is and URL-encoded.
+      const code = src.split('\n').filter((l) => !/^\s*\/\//.test(l)).join('\n').trim();
+      box.value = 'javascript:' + encodeURIComponent(code);
+      btn.textContent = 'Copy bookmark code';
+      btn.disabled = false;
+    })
+    .catch(() => { btn.textContent = 'Could not load the code, reload the page'; });
+  btn.addEventListener('click', async () => {
+    try { await navigator.clipboard.writeText(box.value); }
+    catch { box.select(); document.execCommand('copy'); }
+    btn.textContent = 'Copied ✓';
+    setTimeout(() => { btn.textContent = 'Copy bookmark code'; }, 2000);
+  });
+</script>
 </body>
 </html>
